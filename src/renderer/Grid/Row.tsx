@@ -11,6 +11,7 @@ import RendererComponent from './Renderer'
 import { HandleFilterSelect, IsSelected } from '../Shared'
 import './Row.scss'
 import { i18n } from '../Settings/LanguageSelector'
+import { useDrag } from 'react-dnd'
 
 const { ipcRenderer } = window.api
 
@@ -40,6 +41,15 @@ const Row: React.FC<RowProps> = memo(
     handleButtonClick,
     t
   }) => {
+
+    const [{isDragging}, dragRef] = useDrag({
+      type: 'ROW',
+      item: { id: todoObject },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      })
+    })
+
     const handleConfirmDelete = (): void => {
       if (todoObject) ipcRenderer.send('removeLineFromFile', todoObject.lineNumber)
     }
@@ -124,9 +134,10 @@ const Row: React.FC<RowProps> = memo(
     return (
       <>
         <li
+          ref={dragRef}
           tabIndex={0}
           key={todoObject.lineNumber}
-          className="row"
+          className={`row ${isDragging ? 'dragging' : ''}`}
           data-complete={todoObject.complete}
           data-hidden={todoObject.hidden}
           onClick={(event) => handleRowClick(event)}

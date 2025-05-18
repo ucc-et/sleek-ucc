@@ -14,6 +14,7 @@ import DrawerComponent from './Drawer/Drawer'
 import SearchComponent from './Header/Search/Search'
 import DialogComponent from './Dialog/Dialog'
 import Archive from './Archive'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 import HeaderComponent from './Header/Header'
 import ContextMenu from './ContextMenu'
 import { I18nextProvider } from 'react-i18next'
@@ -23,6 +24,7 @@ import Prompt from './Prompt'
 import './App.scss'
 import './Buttons.scss'
 import './Form.scss'
+import { DndProvider } from 'react-dnd'
 
 const { store, ipcRenderer } = window.api
 
@@ -62,7 +64,7 @@ const App = (): JSX.Element => {
   }, [])
 
   return (
-    <>
+    <DndProvider backend={HTML5Backend}>
       <IpcComponent
         setHeaders={setHeaders}
         setAttributes={setAttributes}
@@ -199,7 +201,7 @@ const App = (): JSX.Element => {
           )}
         </ThemeProvider>
       </I18nextProvider>
-    </>
+    </DndProvider>
   )
 }
 
