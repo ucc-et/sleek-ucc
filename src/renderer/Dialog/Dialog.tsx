@@ -53,7 +53,7 @@ const DialogComponent: React.FC<DialogComponentProps> = memo(
       ?.split('\n')
       .filter((line) => line.trim() !== '').length
 
-    const handleAdd = (): void => {
+    const handleAdd = async (): Promise<void> => {
       try {
         if (textFieldValue) {
           const index = todoObject ? todoObject.lineNumber : -1
@@ -77,11 +77,18 @@ const DialogComponent: React.FC<DialogComponentProps> = memo(
     }
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
-        event.preventDefault()
-        event.stopPropagation()
-        handleAdd()
-      }
+      const isCmdOrCtrlEnter = (event.ctrlKey || event.metaKey) && event.key === 'Enter';
+
+      if(!isCmdOrCtrlEnter) return;
+      
+      event.preventDefault()
+      event.stopPropagation()
+
+      handleAdd().then(() => {
+        if(event.shiftKey){
+          setDialogOpen(true)
+        }
+      })
     }
 
     const updateAttributeFields = (todoObject: TodoObject | null): void => {
